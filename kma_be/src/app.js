@@ -1,4 +1,23 @@
 const express = require("express");
+
+
+//logger
+// const logs = require('./middleware/logger');
+// logs.logger();
+// const morgan = require('morgan');
+// const fs = require('fs');
+// const path = require('path');
+
+// const app = express();
+// app.use(express.json());
+
+// // Ghi log request vào file chung
+// app.use(morgan('combined', {
+//   stream: fs.createWriteStream(path.join(__dirname,'../src/logs/app.log'), { flags: 'a' })
+// }));
+
+
+
 const dotenv = require("dotenv");
 dotenv.config();
 const morgan = require("morgan");
@@ -16,6 +35,15 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+
+//logger
+const logActivity = require("./middelWare/logger");
+app.use(logActivity);
+const logsRouter = require("./routes/logs");
+app.use("/api/logs", logsRouter);
+
+
 routes(app);
 db.sequelize
   .authenticate()

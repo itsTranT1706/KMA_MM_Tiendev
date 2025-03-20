@@ -3,6 +3,7 @@ const UserService = require("../services/authService");
 const jwtService = require("../services/jwtService");
 const register = async (req, res) => {
   try {
+    // console.log(req);
     const { username, password, confirmPassword, ho_ten } = req.body;
 
     if (!username || !password || !confirmPassword || !ho_ten) {
