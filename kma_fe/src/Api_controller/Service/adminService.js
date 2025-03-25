@@ -21,3 +21,9 @@ export const updateUserById = async (id, data) => {
         throw error;
     }
 };
+
+export const getLogActivity = async () => {
+
+    const response = await api.get("/auth/logs");
+    return response; // Trả về role để sử dụng
+};

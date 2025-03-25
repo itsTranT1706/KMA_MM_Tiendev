@@ -1,4 +1,6 @@
-const { users } = require("../models");
+const { users, ActivityLog } = require("../models");
+// const { ActivityLog } = require("../models");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { generalAccessToken, generalRefreshToken } = require("./jwtService");
 
@@ -185,6 +187,20 @@ const changePassword = async (id, oldPassword, newPassword) => {
     throw new Error(error.message);
   }
 };
+
+const get_logs = async (req, res) => {
+  try {
+    const logs = await ActivityLog.findAll();
+    return {
+      status: "OK",
+      message: "Activity logs:",
+      data: logs,
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 module.exports = {
   register,
   loginUser,
@@ -193,4 +209,5 @@ module.exports = {
   getDetailUser,
   updateUser,
   changePassword,
+  get_logs
 };

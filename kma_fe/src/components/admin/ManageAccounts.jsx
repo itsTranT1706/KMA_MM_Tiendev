@@ -53,7 +53,10 @@ const ManageAccounts = () => {
       try {
         const response = await getAllUser();
         if (response.status === 200) {
+          // console.log("134234234",users);
           setUsers(response.data.data);
+          // console.log("234234234",users);
+
           setFilteredUsers(response.data.data);
         } else {
           console.error("Failed to fetch users:", response.message);

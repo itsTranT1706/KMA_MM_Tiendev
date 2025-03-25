@@ -5,7 +5,7 @@ const register = async (req, res) => {
   try {
     // console.log(req);
     const { username, password, confirmPassword, ho_ten } = req.body;
-
+    console.log(username)
     if (!username || !password || !confirmPassword || !ho_ten) {
       return res.status(400).json({
         status: "ERR",
@@ -85,7 +85,7 @@ const getDetailUser = async (req, res) => {
     const response = await UserService.getDetailUser(id);
     return res.status(200).json(response);
   } catch (error) {
-    return res.status(404).json({ message: e });
+    return res.status(404).json({ message: error });
   }
 };
 const updateUser = async (req, res) => {
@@ -154,6 +154,19 @@ const changePassword = async (req, res) => {
   }
 };
 
+const get_logs = async (req, res) => {
+  try {
+    const response = await UserService.get_logs();
+    return res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ 
+      status: "ERR",
+      message: error.message || "Error fetching logs" });
+  }
+
+
+}
+
 module.exports = {
   loginUser,
   refreshToken,
@@ -163,4 +176,5 @@ module.exports = {
   deleteUser,
   updateUser,
   changePassword,
+  get_logs
 };

@@ -40,8 +40,8 @@ app.use(cookieParser());
 //logger
 const logActivity = require("./middelWare/logger");
 app.use(logActivity);
-const logsRouter = require("./routes/logs");
-app.use("/api/logs", logsRouter);
+// const logsRouter = require("./routes/logs");
+// app.use("/api/logs", logsRouter);
 
 
 routes(app);
