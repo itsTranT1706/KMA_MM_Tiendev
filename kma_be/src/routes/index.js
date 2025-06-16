@@ -15,7 +15,7 @@ const khenThuongKyLuatRouter = require("./khenThuongKyLuat");
 
 const phongBanRouter = require("./phongBan");
 const giangVienRouter = require("./giangVien");
-const khoaDaoTaoRouter = require("./khoaDaoTao");
+const khoaDaoTaoRouter = require("./khoaDaoTao.js");
 const monHocRouter = require("./monHoc");
 
 
