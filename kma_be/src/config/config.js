@@ -1,10 +1,15 @@
 const dotenv = require("dotenv");
+const path = require("path");
 dotenv.config();
+
+// Load .env file từ thư mục gốc (1 cấp trên src)
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+console.log("DB_PASSWORD:", process.env.DB_PASSWORD);
 module.exports = {
   development: {
     username: process.env.DB_USERNAME || "root",
     password: process.env.DB_PASSWORD || "secret",
-    database: process.env.DB_DATABASE || "quan_ly_dao_tao",
+    database: process.env.DB_DATABASE || "quan_ly_dao_tao_2",
     host: process.env.DB_HOST || "hn-fornix-testing-bigdata-5",
     port: process.env.PORT || "3301",
     dialect: process.env.DB_DIALECT || "mysql",

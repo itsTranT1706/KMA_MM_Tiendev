@@ -1,17 +1,17 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("activity_logs", {
-      id: {
+      ID: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true
       },
-      actor_id: {
-        type: Sequelize.INTEGER,
+      Username: {
+        type: Sequelize.STRING,
         allowNull: false
       },
-      actor_role: {
-        type: Sequelize.ENUM("admin", "daoTao", "khaoThi", "giamDoc", "quanLiSinhVien"),
+      Role: {
+        type: Sequelize.ENUM("admin", "daoTao", "khaoThi", "giamDoc", "quanLiSinhVien","sinhVien","unknown"),
         allowNull: false
       },
       action: {

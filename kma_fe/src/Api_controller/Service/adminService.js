@@ -21,3 +21,11 @@ export const updateUserById = async (id, data) => {
         throw error;
     }
 };
+
+export const getLogActivity = async (page) => {
+
+    const response = await api.get("/auth/logs", {
+        params: {page},
+    });
+    return response; // Trả về role để sử dụng
+};

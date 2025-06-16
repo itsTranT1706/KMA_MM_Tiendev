@@ -1,4 +1,6 @@
-const { users } = require("../models");
+const { users, activity_logs } = require("../models");
+// const { ActivityLog } = require("../models");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { generalAccessToken, generalRefreshToken } = require("./jwtService");
 
@@ -144,6 +146,7 @@ const updateUser = async (id, data) => {
       return {
         status: "ERR",
         message: "Failed to update user!",
+        
       };
     }
     const updatedUser = await users.findOne({ where: { id } });
@@ -185,6 +188,25 @@ const changePassword = async (id, oldPassword, newPassword) => {
     throw new Error(error.message);
   }
 };
+
+const get_logs = async (limit, offset, page) => {
+  try {
+    const logs = await activity_logs.findAll();
+    // const total_page = Math.ceil(count/limit);
+    // console.log("limit: " , page)
+    return {
+       status: "OK",
+       message: "get all activities",
+      //  current_page: page,
+      //  total_page,
+      //  total_items: count,
+       data: logs
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 module.exports = {
   register,
   loginUser,
@@ -193,4 +215,5 @@ module.exports = {
   getDetailUser,
   updateUser,
   changePassword,
+  get_logs
 };

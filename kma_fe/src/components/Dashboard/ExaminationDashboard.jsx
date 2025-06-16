@@ -1,675 +1,401 @@
 import React, { useState } from 'react';
 import {
-    AppBar,
     Box,
-    Button,
-    Card,
-    CardContent,
-    Container,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Grid,
+    Typography,
     Paper,
-    Snackbar,
-    Tab,
+    Grid,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Button,
+    Checkbox,
+    FormControlLabel,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
     TableRow,
-    Tabs,
     TextField,
-    Typography,
-    Alert,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Chip,
-    List,
-    ListItem,
-    ListItemText,
+    Tabs,
+    Tab,
     Divider,
-    InputAdornment,
+    Container,
 } from '@mui/material';
-import {
-    Assessment,
-    Class,
-    CloudUpload,
-    Download,
-    Person,
-    School,
-    Search,
-    Visibility,
-} from '@mui/icons-material';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import SaveIcon from '@mui/icons-material/Save';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import SearchIcon from '@mui/icons-material/Search';
+import DownloadIcon from '@mui/icons-material/Download';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { styled } from '@mui/material/styles';
+import QuanLyDiem from '../Diem/QuanLyDiem';
+import TaoBangDiem from '../Diem/TaoBangDiem';
+import XemDanhSachDiem from '../Diem/XemDanhSachDiem';
+import StudentManagement from '../QLHV/StudentManagement ';
+import MonHocTheoHeDaoTao from '../Mon Hoc/MonHocTheoHeDaoTao';
+import QuanLyDaoTao from '../Dao Tao/QuanLyDaoTao';
+import QuanLyKhoa from '../Khoa/QuanLyKhoa';
+import QuanLyLop from '../LOP/ClassManagement';
+import DieuKienTotNghiep from '../Dao Tao/DieuKienTotNghiep';
+import QuanLyBangCap from '../Dao Tao/QuanLyBangCap';
+import QuanLyKhenKyLuat from '../QLHV/khen_kyLuat';
+import QuanLyChungChi from '../QuanLyChungChi/QuanLyChungChi';
+import QuanLyMonHoc from '../Mon Hoc/QuanLyMonHoc';
+import PhuLucBangDiem from '../Dao Tao/PhuLucBangDiem';
+import ThongKeTotNghiep from '../Dao Tao/ThongKe';
 
-// Mock data
-const mockClasses = [
-    { id: "CNTT1", name: "Công nghệ thông tin 1" },
-    { id: "CNTT2", name: "Công nghệ thông tin 2" },
-    { id: "KTPM1", name: "Kỹ thuật phần mềm 1" }
+// Styled component for file upload
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
+
+// Sample data for demonstration
+const sampleStudents = [
+    { id: 'SV001', name: 'Lê Hoài Nam', class: 'CT6', status: 'Học lần 1', scores: { TP1: 7, TP2: 8, CK1: 3, CK2: 2 } },
+    { id: 'SV002', name: 'Nguyễn Văn Trọng', class: 'CT6', status: 'Học lần 1', scores: { TP1: 5, TP2: 6, CK1: 2, CK2: null } },
+    { id: 'SV003', name: 'Trần Thị Hương', class: 'CT6', status: 'Học lần 2', scores: { TP1: 7, TP2: 8, CK1: 1, CK2: 6 } },
 ];
 
-const mockSubjects = [
-    { id: "MATH101", name: "Toán cao cấp" },
-    { id: "PROG101", name: "Lập trình cơ bản" },
-    { id: "ENG101", name: "Tiếng Anh" },
-];
-
-const mockStudentGrades = {
-    "SV001": {
-        info: { name: "Nguyễn Văn A", class: "CNTT1" },
-        grades: [
-            { subject: "MATH101", midterm: 7.5, final: 4.0, average: 5.25 },
-            { subject: "PROG101", midterm: 8.0, final: 7.5, average: 7.7 },
-            { subject: "ENG101", midterm: 6.5, final: 7.0, average: 6.8 },
-        ]
-    }
-};
-
-const mockGrades = [
-    {
-        studentId: "SV001",
-        name: "Nguyễn Văn A",
-        midterm: 7.5,
-        final: 4.0,
-        average: 5.25,
-        status: "failed"
-    },
-    {
-        studentId: "SV002",
-        name: "Trần Thị B",
-        midterm: 8.5,
-        final: 8.0,
-        average: 8.2,
-        status: "passed"
-    },
-    {
-        studentId: "SV003",
-        name: "Lê Văn C",
-        midterm: 0,
-        final: 0,
-        average: 0,
-        status: "banned"
-    }
-];
-const mockStudents = [
-    {
-        id: "SV001",
-        name: "Nguyễn Văn A",
-        class: "CNTT1",
-        grades: {
-            semester: "HK1 2023-2024",
-            subjects: [
-                { code: "MATH101", name: "Toán cao cấp", credits: 3, midterm: 8.5, final: 7.5, average: 8.0 },
-                { code: "PRG101", name: "Lập trình cơ bản", credits: 4, midterm: 7.0, final: 8.0, average: 7.5 },
-                { code: "ENG101", name: "Tiếng Anh", credits: 3, midterm: 8.0, final: 8.5, average: 8.25 }
-            ]
-        }
-    },
-    {
-        id: "SV002",
-        name: "Trần Thị B",
-        class: "CNTT2",
-        grades: {
-            semester: "HK1 2023-2024",
-            subjects: [
-                { code: "MATH101", name: "Toán cao cấp", credits: 3, midterm: 9.0, final: 8.5, average: 8.75 },
-                { code: "PRG101", name: "Lập trình cơ bản", credits: 4, midterm: 8.5, final: 8.0, average: 8.25 },
-                { code: "ENG101", name: "Tiếng Anh", credits: 3, midterm: 7.5, final: 8.0, average: 7.75 }
-            ]
-        }
-    }
-];
-
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    {children}
-                </Box>
-            )}
-        </div>
-    );
-}
-
-function ExamDashboard() {
+const GradeImportSystem = () => {
     const [currentTab, setCurrentTab] = useState(0);
-    const [openImportDialog, setOpenImportDialog] = useState(false);
-    const [showSnackbar, setShowSnackbar] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [openStudentDialog, setOpenStudentDialog] = useState(false);
-    const [selectedClass, setSelectedClass] = useState('');
-    const [selectedSubjects, setSelectedSubjects] = useState([]);
-    const [currentStudent, setCurrentStudent] = useState(null);
-    const [selectedStudent, setSelectedStudent] = useState(null);
-    const [openDialog, setOpenDialog] = useState(false);
+    const [subTab, setSubTab] = useState(0); // State cho tab con
+    const [year, setYear] = useState('');
+    const [semester, setSemester] = useState('');
+    const [examPeriod, setExamPeriod] = useState('');
+    const [course, setCourse] = useState('');
+    const [examType, setExamType] = useState('');
+    const [classGroup, setClassGroup] = useState('');
+    const [tabValue, setTabValue] = useState(0);
+    const [students, setStudents] = useState(sampleStudents);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [batch, setBatch] = useState('');
+    const [major, setMajor] = useState('');
+    const [examNumber, setExamNumber] = useState('');
+    const [educationType, setEducationType] = useState('');
+    const [viewFilter, setViewFilter] = useState({
+        year: '',
+        semester: '',
+        examPeriod: '',
+        batch: '',
+        major: '',
+        course: '',
+        classGroup: '',
+        examNumber: '',
+        educationType: ''
+    });
 
-    const handleSearch = (event) => {
-        setSearchTerm(event.target.value);
-    };
-
-    const handleViewDetails = (student) => {
-        setSelectedStudent(student);
-        setOpenDialog(true);
-    };
-
-    const handleExportGrades = (student) => {
-        console.log(`Exporting grades for student: ${student.id}`);
-        // Add export logic here
-    };
-
-    const filteredStudents = mockStudents.filter(student =>
-        student.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.class.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-
-    const handleViewStudent = (studentId) => {
-        setCurrentStudent(mockStudentGrades[studentId]);
-        setOpenStudentDialog(true);
-    };
-
-    const handleExportClass = () => {
-        // Logic to export class grades
-        console.log(`Exporting grades for class ${selectedClass} and subjects:`, selectedSubjects);
-    };
-
-    const handleExportStudent = (studentId) => {
-        // Logic to export student grades
-        console.log(`Exporting grades for student:`, studentId);
-    };
     const handleTabChange = (event, newValue) => {
         setCurrentTab(newValue);
+        setSubTab(0); // Reset tab con về 0 khi chuyển tab chính
+    };
+    const handleSubTabChange = (event, newValue) => {
+        setSubTab(newValue);
+    };
+    const [reportType, setReportType] = useState('summary');
+
+    // Add these handler functions
+    const handleGenerateReport = () => {
+        // Logic to generate the selected report type
+        alert('Đang tạo báo cáo...');
+    };
+
+    const handleExportReport = () => {
+        // Logic to export the generated report
+        alert('Xuất báo cáo thành công!');
+    };
+
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
     };
 
     const handleImport = () => {
-        setShowSnackbar(true);
-        setOpenImportDialog(false);
+        // Logic to import grades would go here
+        alert('Điểm đã được import thành công!');
     };
 
-    const getStatusStyle = (status) => {
-        switch (status) {
-            case 'failed':
-                return { backgroundColor: '#ffebee', color: '#d32f2f' };
-            case 'banned':
-                return { backgroundColor: '#f5f5f5', color: '#757575' };
-            default:
-                return {};
+    const handleSearch = () => {
+        // Create a sample database of students (in a real app, this would come from an API or database)
+        const allStudents = [
+            {
+                id: 'SV001',
+                name: 'Lê Hoài Nam',
+                class: 'CT6',
+                batch: 'K15',
+                major: 'CNTT',
+                educationType: 'CQ',
+                status: 'Thi lần 1',
+                examNumber: '1',
+                scores: { TP1: 7, TP2: 8, CK1: 3, CK2: null }
+            },
+            {
+                id: 'SV002',
+                name: 'Nguyễn Văn Trọng',
+                class: 'CT6',
+                batch: 'K15',
+                major: 'CNTT',
+                educationType: 'CQ',
+                status: 'Thi lần 1',
+                examNumber: '1',
+                scores: { TP1: 5, TP2: 6, CK1: 2, CK2: null }
+            },
+            {
+                id: 'SV003',
+                name: 'Trần Thị Hương',
+                class: 'CT6',
+                batch: 'K15',
+                major: 'HTTT',
+                educationType: 'CQ',
+                status: 'Thi lần 2',
+                examNumber: '2',
+                scores: { TP1: 7, TP2: 8, CK1: 1, CK2: 6 }
+            },
+            {
+                id: 'SV004',
+                name: 'Phạm Minh Tuấn',
+                class: 'CT7',
+                batch: 'K15',
+                major: 'KTPM',
+                educationType: 'CQ',
+                status: 'Thi lần 1',
+                examNumber: '1',
+                scores: { TP1: 8, TP2: 9, CK1: 7, CK2: null }
+            },
+            {
+                id: 'SV005',
+                name: 'Hoàng Thị Mai',
+                class: 'CT8',
+                batch: 'K16',
+                major: 'MMT',
+                educationType: 'LT',
+                status: 'Thi lần 1',
+                examNumber: '1',
+                scores: { TP1: 6, TP2: 7, CK1: 4, CK2: null }
+            },
+            {
+                id: 'SV006',
+                name: 'Vũ Đức Anh',
+                class: 'CT7',
+                batch: 'K16',
+                major: 'CNTT',
+                educationType: 'VLVH',
+                status: 'Thi lần 2',
+                examNumber: '2',
+                scores: { TP1: 4, TP2: 5, CK1: 2, CK2: 5 }
+            }
+        ];
+
+        // Filter students based on selected criteria
+        let filteredStudents = [...allStudents];
+
+        // Apply filters only if they have been selected
+        if (year) {
+            // In a real application, you would filter by year
+            // Since our sample data doesn't have year info, we'll skip this filter
+            console.log(`Filtering by academic year: ${year}`);
         }
+
+        if (semester) {
+            // In a real application, you would filter by semester
+            console.log(`Filtering by semester: ${semester}`);
+        }
+
+        if (examPeriod) {
+            // In a real application, you would filter by exam period
+            console.log(`Filtering by exam period: ${examPeriod}`);
+        }
+
+        if (batch) {
+            filteredStudents = filteredStudents.filter(student => student.batch === batch);
+        }
+
+        if (major) {
+            filteredStudents = filteredStudents.filter(student => student.major === major);
+        }
+
+        if (course) {
+            // In a real application, you would filter by course
+            // Since our sample data doesn't have course info, we'll skip this filter
+            console.log(`Filtering by course: ${course}`);
+        }
+
+        if (classGroup && classGroup !== 'ALL') {
+            filteredStudents = filteredStudents.filter(student => student.class === classGroup);
+        }
+
+        if (examNumber) {
+            filteredStudents = filteredStudents.filter(student => student.examNumber === examNumber);
+        }
+
+        if (educationType) {
+            filteredStudents = filteredStudents.filter(student => student.educationType === educationType);
+        }
+
+        // Update the students state with filtered results
+        setStudents(filteredStudents);
+
+        // Provide feedback to the user
+        if (filteredStudents.length > 0) {
+            alert(`Đã tìm thấy ${filteredStudents.length} sinh viên phù hợp với các tiêu chí.`);
+        } else {
+            alert('Không tìm thấy sinh viên nào phù hợp với các tiêu chí đã chọn.');
+        }
+
+        // Log the filter criteria for debugging
+        console.log('Search criteria:', {
+            year,
+            semester,
+            examPeriod,
+            batch,
+            major,
+            course,
+            classGroup,
+            examNumber,
+            educationType
+        });
+    };
+
+    const handleViewSearch = () => {
+        // Logic to search students for viewing
+        alert('Đã tìm danh sách điểm theo các bộ lọc đã chọn');
+    };
+
+    const handleScoreChange = (studentId, scoreType, value) => {
+        const updatedStudents = students.map(student =>
+            student.id === studentId
+                ? { ...student, scores: { ...student.scores, [scoreType]: value === '' ? null : Number(value) } }
+                : student
+        );
+        setStudents(updatedStudents);
+    };
+
+    const handleSave = () => {
+        // Logic to save grades would go here
+        alert('Đã lưu thành công!');
+    };
+
+    const handleRetakeRegistration = (studentId, checked) => {
+        const updatedStudents = students.map(student =>
+            student.id === studentId
+                ? { ...student, retakeRegistered: checked }
+                : student
+        );
+        setStudents(updatedStudents);
+    };
+
+    // Handle view filter changes
+    const handleViewFilterChange = (field, value) => {
+        setViewFilter({
+            ...viewFilter,
+            [field]: value
+        });
     };
 
     return (
-        <Box sx={{ bgcolor: '#f5f5f5', minHeight: '100vh', py: 4 }}>
-            <Container maxWidth="xl">
-                <Paper sx={{ mb: 2, p: 2 }}>
+        <Box sx={{ bgcolor: 'white', minHeight: '100vh' }}>
+            <Container maxWidth="" sx={{ py: 4 }}>
+                <Paper sx={{ mb: 4, p: 3, borderRadius: 2 }}>
+                    {/* Tab chính */}
                     <Tabs
                         value={currentTab}
                         onChange={handleTabChange}
-                        sx={{ borderBottom: 1, borderColor: 'divider' }}
+                        sx={{
+                            mb: 3,
+                            '& .MuiTab-root': {
+                                fontWeight: 'bold',
+                                fontSize: '1rem',
+                                color: 'primary.main',
+                                textTransform: 'uppercase',
+                                padding: '12px 24px',
+                            },
+                            '& .Mui-selected': {
+                                color: 'secondary.main',
+                                borderBottom: '2px solid',
+                                borderColor: 'secondary.main',
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                            },
+                        }}
                     >
-                        <Tab
-                            icon={<Assessment />}
-                            label="Quản lý điểm"
-                            iconPosition="start"
-                        />
-                        <Tab
-                            icon={<Assessment />}
-                            label="Tra cứu điểm"
-                            iconPosition="start"
-                        />
-                        <Tab
-                            icon={<Assessment />}
-                            label="Thống kê"
-                            iconPosition="start"
-                        />
+                        <Tab label="Quản lý điểm" />
+                        <Tab label="Quản lý học viên" />
+                        <Tab label="Quản lý môn học" />
+                        <Tab label="Thống kê và báo cáo" />
                     </Tabs>
 
-                    <TabPanel value={currentTab} index={0}>
-                        <Box sx={{ bgcolor: '', minHeight: '100vh', py: 4 }}>
-                            <Container maxWidth="xl">
-                                    <Grid container spacing={2} sx={{ mb: 2 }}>
-                                        <Grid item xs={12} md={3}>
-                                            <FormControl fullWidth size="small">
-                                                <InputLabel>Lớp</InputLabel>
-                                                <Select
-                                                    value={selectedClass}
-                                                    label="Lớp"
-                                                    onChange={(e) => setSelectedClass(e.target.value)}
-                                                >
-                                                    {mockClasses.map(cls => (
-                                                        <MenuItem key={cls.id} value={cls.id}>{cls.name}</MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={12} md={5}>
-                                            <FormControl fullWidth size="small">
-                                                <InputLabel>Môn học</InputLabel>
-                                                <Select
-                                                    multiple
-                                                    value={selectedSubjects}
-                                                    label="Môn học"
-                                                    onChange={(e) => setSelectedSubjects(e.target.value)}
-                                                    renderValue={(selected) => (
-                                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                                            {selected.map((value) => (
-                                                                <Chip
-                                                                    key={value}
-                                                                    label={mockSubjects.find(s => s.id === value)?.name}
-                                                                    size="small"
-                                                                />
-                                                            ))}
-                                                        </Box>
-                                                    )}
-                                                >
-                                                    {mockSubjects.map(subject => (
-                                                        <MenuItem key={subject.id} value={subject.id}>
-                                                            {subject.name}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={12} md={4}>
-                                            <Box sx={{ display: 'flex', gap: 1 }}>
-                                                <Button
-                                                    variant="outlined"
-                                                    startIcon={<CloudUpload />}
-                                                    onClick={() => setOpenImportDialog(true)}
-                                                    disabled={!selectedClass || !selectedSubjects.length}
-                                                >
-                                                    Import điểm
-                                                </Button>
-                                                <Button
-                                                    variant="contained"
-                                                    startIcon={<Download />}
-                                                    onClick={handleExportClass}
-                                                    disabled={!selectedClass || !selectedSubjects.length}
-                                                >
-                                                    Xuất điểm lớp
-                                                </Button>
-                                            </Box>
-                                        </Grid>
-                                    </Grid>
-
-                                    <TableContainer>
-                                        <Table>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>MSSV</TableCell>
-                                                    <TableCell>Họ và tên</TableCell>
-                                                    {selectedSubjects.map(subjectId => (
-                                                        <React.Fragment key={subjectId}>
-                                                            <TableCell align="center">{mockSubjects.find(s => s.id === subjectId)?.name} (GK)</TableCell>
-                                                            <TableCell align="center">{mockSubjects.find(s => s.id === subjectId)?.name} (CK)</TableCell>
-                                                        </React.Fragment>
-                                                    ))}
-                                                    <TableCell align="center">Thao tác</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {Object.entries(mockStudentGrades).map(([studentId, data]) => (
-                                                    <TableRow key={studentId}>
-                                                        <TableCell>{studentId}</TableCell>
-                                                        <TableCell>{data.info.name}</TableCell>
-                                                        {selectedSubjects.map(subjectId => {
-                                                            const grade = data.grades.find(g => g.subject === subjectId);
-                                                            return (
-                                                                <React.Fragment key={subjectId}>
-                                                                    <TableCell align="center">{grade?.midterm || '-'}</TableCell>
-                                                                    <TableCell align="center">{grade?.final || '-'}</TableCell>
-                                                                </React.Fragment>
-                                                            );
-                                                        })}
-                                                        <TableCell align="center">
-                                                            <Button
-                                                                size="small"
-                                                                startIcon={<Visibility />}
-                                                                onClick={() => handleViewStudent(studentId)}
-                                                            >
-                                                                Xem chi tiết
-                                                            </Button>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-
-                                {/* Import Dialog */}
-                                <Dialog
-                                    open={openImportDialog}
-                                    onClose={() => setOpenImportDialog(false)}
-                                    maxWidth="sm"
-                                    fullWidth
-                                >
-                                    <DialogTitle>Import điểm - {mockClasses.find(c => c.id === selectedClass)?.name}</DialogTitle>
-                                    <DialogContent>
-                                        <Box sx={{ mt: 2 }}>
-                                            <Typography variant="subtitle2" gutterBottom>
-                                                Môn học: {selectedSubjects.map(s => mockSubjects.find(sub => sub.id === s)?.name).join(', ')}
-                                            </Typography>
-                                            <Button
-                                                variant="outlined"
-                                                component="label"
-                                                startIcon={<CloudUpload />}
-                                                sx={{ mt: 2 }}
-                                            >
-                                                Chọn file Excel
-                                                <input
-                                                    type="file"
-                                                    hidden
-                                                    accept=".xlsx,.xls"
-                                                    onChange={(e) => console.log(e.target.files[0])}
-                                                />
-                                            </Button>
-                                        </Box>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={() => setOpenImportDialog(false)}>
-                                            Hủy
-                                        </Button>
-                                        <Button onClick={handleImport} variant="contained">
-                                            Import
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
-
-                                {/* Student Detail Dialog */}
-                                <Dialog
-                                    open={openStudentDialog}
-                                    onClose={() => setOpenStudentDialog(false)}
-                                    maxWidth="md"
-                                    fullWidth
-                                >
-                                    <DialogTitle>
-                                        Thông tin điểm - {currentStudent?.info.name}
-                                    </DialogTitle>
-                                    <DialogContent>
-                                        <List>
-                                            {currentStudent?.grades.map((grade, index) => (
-                                                <React.Fragment key={grade.subject}>
-                                                    <ListItem>
-                                                        <ListItemText
-                                                            primary={mockSubjects.find(s => s.id === grade.subject)?.name}
-                                                            secondary={
-                                                                <Typography component="span" variant="body2">
-                                                                    Giữa kỳ: {grade.midterm} | Cuối kỳ: {grade.final} | Trung bình: {grade.average}
-                                                                </Typography>
-                                                            }
-                                                        />
-                                                    </ListItem>
-                                                    {index < currentStudent.grades.length - 1 && <Divider />}
-                                                </React.Fragment>
-                                            ))}
-                                        </List>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button
-                                            onClick={() => handleExportStudent(currentStudent?.studentId)}
-                                            startIcon={<Download />}
-                                        >
-                                            Xuất điểm
-                                        </Button>
-                                        <Button onClick={() => setOpenStudentDialog(false)}>
-                                            Đóng
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
-
-                                <Snackbar
-                                    open={showSnackbar}
-                                    autoHideDuration={3000}
-                                    onClose={() => setShowSnackbar(false)}
-                                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                                >
-                                    <Alert severity="success" onClose={() => setShowSnackbar(false)}>
-                                        Import điểm thành công!
-                                    </Alert>
-                                </Snackbar>
-                            </Container>
+                    {currentTab === 0 && (
+                        <Box>
+                            {/* Tab con */}
+                            <Tabs
+                                value={subTab}
+                                onChange={handleSubTabChange}
+                                sx={{
+                                    mb: 2,
+                                    '& .MuiTab-root': {
+                                        fontWeight: 'normal',
+                                        fontSize: '0.9rem',
+                                        color: 'text.secondary',
+                                        padding: '8px 16px',
+                                    },
+                                    '& .Mui-selected': {
+                                        color: 'primary.main',
+                                        borderBottom: '2px solid',
+                                        borderColor: 'primary.main',
+                                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                    },
+                                }}
+                            >
+                                <Tab label="Tạo bảng điểm" />
+                                <Tab label="Quản lý điểm" />
+                                <Tab label="Xem danh sách điểm" />
+                            </Tabs>
+                            {subTab === 0 && <TaoBangDiem />}
+                            {subTab === 1 && <QuanLyDiem />}
+                            {subTab === 2 && <XemDanhSachDiem />}
                         </Box>
+                    )}
 
-                    </TabPanel>
+                    {currentTab === 1 && (
+                        <Box>
+                            <Tabs value={subTab} onChange={handleSubTabChange}>
+                                <Tab label="Danh sách học viên" />
+                                <Tab label="Xét tốt nghiệp" />
+                                <Tab label="Quản lý bằng cấp" />
+                            </Tabs>
+                            {subTab === 0 && <StudentManagement />}
+                            {subTab === 1 && <DieuKienTotNghiep />}
+                            {subTab === 2 && <QuanLyBangCap />}
+                        </Box>
+                    )}
 
-                    <TabPanel value={currentTab} index={1}>
-                                <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    placeholder="Tìm kiếm theo MSSV, Họ tên, hoặc Lớp..."
-                                    value={searchTerm}
-                                    onChange={handleSearch}
-                                    sx={{ mb: 3 }}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <Search />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-
-                                {filteredStudents.map((student) => (
-                                    <Card key={student.id} sx={{ mb: 2 }}>
-                                        <CardContent>
-                                            <Grid container spacing={2} alignItems="center">
-                                                <Grid item xs={12} md={4}>
-                                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                        <Person sx={{ mr: 1 }} />
-                                                        <Box>
-                                                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                                                                {student.name}
-                                                            </Typography>
-                                                            <Typography variant="body2" color="text.secondary">
-                                                                MSSV: {student.id}
-                                                            </Typography>
-                                                        </Box>
-                                                    </Box>
-                                                </Grid>
-                                                <Grid item xs={12} md={4}>
-                                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                        <Class sx={{ mr: 1 }} />
-                                                        <Typography>Lớp: {student.class}</Typography>
-                                                    </Box>
-                                                </Grid>
-                                                <Grid item xs={12} md={4}>
-                                                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                                                        <Button
-                                                            variant="outlined"
-                                                            onClick={() => handleViewDetails(student)}
-                                                        >
-                                                            Xem điểm
-                                                        </Button>
-                                                        <Button
-                                                            variant="contained"
-                                                            startIcon={<Download />}
-                                                            onClick={() => handleExportGrades(student)}
-                                                        >
-                                                            Xuất điểm
-                                                        </Button>
-                                                    </Box>
-                                                </Grid>
-                                            </Grid>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-
-                                {filteredStudents.length === 0 && (
-                                    <Typography textAlign="center" color="text.secondary" sx={{ py: 4 }}>
-                                        Không tìm thấy sinh viên phù hợp
-                                    </Typography>
-                                )}
-
-                                <Dialog
-                                    open={openDialog}
-                                    onClose={() => setOpenDialog(false)}
-                                    maxWidth="md"
-                                    fullWidth
-                                >
-                                    <DialogTitle>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <School />
-                                            <Typography variant="h6">
-                                                Bảng điểm - {selectedStudent?.name}
-                                            </Typography>
-                                        </Box>
-                                    </DialogTitle>
-                                    <DialogContent>
-                                        {selectedStudent && (
-                                            <>
-                                                <Box sx={{ mb: 3, mt: 2 }}>
-                                                    <Typography variant="body1" gutterBottom>
-                                                        MSSV: {selectedStudent.id}
-                                                    </Typography>
-                                                    <Typography variant="body1" gutterBottom>
-                                                        Lớp: {selectedStudent.class}
-                                                    </Typography>
-                                                    <Typography variant="body1" gutterBottom>
-                                                        Học kỳ: {selectedStudent.grades.semester}
-                                                    </Typography>
-                                                </Box>
-                                                <TableContainer>
-                                                    <Table>
-                                                        <TableHead>
-                                                            <TableRow>
-                                                                <TableCell>Mã môn</TableCell>
-                                                                <TableCell>Tên môn học</TableCell>
-                                                                <TableCell align="center">Số tín chỉ</TableCell>
-                                                                <TableCell align="center">Điểm GK</TableCell>
-                                                                <TableCell align="center">Điểm CK</TableCell>
-                                                                <TableCell align="center">Trung bình</TableCell>
-                                                            </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                            {selectedStudent.grades.subjects.map((subject) => (
-                                                                <TableRow key={subject.code}>
-                                                                    <TableCell>{subject.code}</TableCell>
-                                                                    <TableCell>{subject.name}</TableCell>
-                                                                    <TableCell align="center">{subject.credits}</TableCell>
-                                                                    <TableCell align="center">{subject.midterm}</TableCell>
-                                                                    <TableCell align="center">{subject.final}</TableCell>
-                                                                    <TableCell align="center">{subject.average}</TableCell>
-                                                                </TableRow>
-                                                            ))}
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer>
-                                            </>
-                                        )}
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button
-                                            onClick={() => handleExportGrades(selectedStudent)}
-                                            startIcon={<Download />}
-                                        >
-                                            Xuất điểm
-                                        </Button>
-                                        <Button onClick={() => setOpenDialog(false)}>
-                                            Đóng
-                                        </Button>
-                                    </DialogActions>
-                                </Dialog>
-                    </TabPanel>
-                    <TabPanel value={currentTab} index={2}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} md={4}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography color="textSecondary" gutterBottom>
-                                            Tổng số sinh viên
-                                        </Typography>
-                                        <Typography variant="h3">
-                                            150
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
+                    {currentTab === 2 && (
+                        <QuanLyMonHoc />
+                    )}
+                    {currentTab === 3 && (
+                        <Box>
+                            <Tabs value={subTab} onChange={handleSubTabChange}>
+                                <Tab label="Thống kê tốt nghiệp" />
+                                <Tab label="Báo cáo chi tiết" />
+                            </Tabs>
+                            <Grid container spacing={3} sx={{ mt: 2 }}>
+                                {subTab === 0 && <ThongKeTotNghiep />}
                             </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography color="textSecondary" gutterBottom>
-                                            Tỷ lệ đạt
-                                        </Typography>
-                                        <Typography variant="h3" sx={{ color: 'success.main' }}>
-                                            85%
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography color="textSecondary" gutterBottom>
-                                            Sinh viên cấm thi
-                                        </Typography>
-                                        <Typography variant="h3" sx={{ color: 'error.main' }}>
-                                            5
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        </Grid>
-                    </TabPanel>
+                        </Box>
+                    )}
                 </Paper>
 
-                {/* Import Dialog */}
-                <Dialog
-                    open={openImportDialog}
-                    onClose={() => setOpenImportDialog(false)}
-                >
-                    <DialogTitle>Import điểm</DialogTitle>
-                    <DialogContent>
-                        <Box sx={{ mt: 2 }}>
-                            <Button
-                                variant="outlined"
-                                component="label"
-                                startIcon={<CloudUpload />}
-                            >
-                                Chọn file Excel
-                                <input
-                                    type="file"
-                                    hidden
-                                    accept=".xlsx,.xls"
-                                    onChange={(e) => console.log(e.target.files[0])}
-                                />
-                            </Button>
-                        </Box>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setOpenImportDialog(false)}>
-                            Hủy
-                        </Button>
-                        <Button onClick={handleImport} variant="contained">
-                            Import
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-
-                {/* Success Snackbar */}
-                <Snackbar
-                    open={showSnackbar}
-                    autoHideDuration={3000}
-                    onClose={() => setShowSnackbar(false)}
-                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                >
-                    <Alert severity="success" onClose={() => setShowSnackbar(false)}>
-                        Import điểm thành công!
-                    </Alert>
-                </Snackbar>
             </Container>
         </Box>
     );
 }
 
-export default ExamDashboard;
+
+export default GradeImportSystem;

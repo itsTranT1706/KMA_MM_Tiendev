@@ -3,7 +3,6 @@ const UserService = require("../services/authService");
 const jwtService = require("../services/jwtService");
 const register = async (req, res) => {
   try {
-    // console.log(req);
     const { username, password, confirmPassword, ho_ten } = req.body;
 
     if (!username || !password || !confirmPassword || !ho_ten) {
@@ -154,6 +153,32 @@ const changePassword = async (req, res) => {
   }
 };
 
+const get_logs = async (req, res) => {
+  try {
+    // const page = parseInt(req.query.page) || 1 ;
+    // const limit = parseInt(req.query.limit) || 10;
+    // if (limit > 100) {
+    //   return res.status(400).json({
+    //     status: "ERR",
+    //     message: "Max limit"
+    //   })
+    // }
+    // const offset = (page -1 ) *limit;
+    
+    // const response = await UserService.get_logs(limit, offset, page);
+    const response = await UserService.get_logs();
+    
+    return res.status(200).json(response);
+
+  } catch (error) {
+    res.status(500).json({ 
+      status: "ERR",
+      message: error.message || "Error fetching logs" });
+  }
+
+
+}
+
 module.exports = {
   loginUser,
   refreshToken,
@@ -163,4 +188,5 @@ module.exports = {
   deleteUser,
   updateUser,
   changePassword,
+  get_logs
 };

@@ -32,8 +32,10 @@ import ManageObjects from "./components/admin/ManageObject";
 import ManageDepartments from "./components/admin/ManageDepartment";
 import FormGiangVien from "./components/admin/TeacherForm";
 import QuanLyGiangViens from "./components/admin/QuanlyGiangVien";
+import QuanLyMonHoc from "./components/Mon Hoc/QuanLyMonHoc";
+import QuanLyChungChi from "./components/QuanLyChungChi/QuanLyChungChi";
 
-
+import { ToastContainer } from 'react-toastify';
 const App = () => {
   // Lấy role từ localStorage khi khởi động
   const [role, setRole] = useState(localStorage.getItem("role") || "");
@@ -50,7 +52,7 @@ const App = () => {
     try {
       let id = localStorage.getItem("id");
       const response = await getDetailUserById(id); //
-      console.log(response.data);
+      //console.log(response.data);
       setInfo(response.data);
     } catch (e) {
       throw e;
@@ -199,6 +201,18 @@ const App = () => {
           }
         />
 
+        {/* chung chi */}
+        <Route
+          path="/training/certificates"
+          element={
+            <PrivateRoute role={role} allowedRoles={["training"]}>
+              <Layout Info={info} title="Quản lý chứng chỉ">
+                <QuanLyChungChi />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="/examination/dashboard"
           element={
@@ -255,6 +269,18 @@ const App = () => {
 
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </Router>
   );
 };

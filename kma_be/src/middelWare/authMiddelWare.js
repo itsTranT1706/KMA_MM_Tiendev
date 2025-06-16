@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const { activity_logs } = require("../models");
+
 dotenv.config();
 const authAdminMiddleWare = (req, res, next) => {
   // console.log(req.headers);
