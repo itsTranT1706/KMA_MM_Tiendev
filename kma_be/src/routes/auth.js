@@ -15,7 +15,6 @@ router.delete(
   authController.deleteUser
 );
 router.get("/get-all", authAdminMiddleWare, authController.getAllUser);
-router.get("/logs", authAdminMiddleWare, authController.get_logs);
 router.get(
   "/get-detail-user/:id",
   authUSerMiddleWare,
@@ -27,5 +26,10 @@ router.put(
   authUSerMiddleWare,
   authController.changePassword
 );
+
+
+//logs
+router.get("/logs", authAdminMiddleWare, authController.get_logs);
+
 
 module.exports = router;

@@ -4,7 +4,7 @@ const giangVienService = require("../services/giangVienService");
 const createGiangVien = async (req, res) => {
   try {
     console.log(req.body);
-    const { maGiangVien, username, hoTen, email, thuocKhoa, laGiangVienMoi, maPhongBan } = req.body;
+    const { maGiangVien, username, hoTen, thuocKhoa, laGiangVienMoi, maPhongBan } = req.body;
 
     // Kiểm tra các trường bắt buộc
     const missingFields = [];
@@ -12,7 +12,6 @@ const createGiangVien = async (req, res) => {
     if (!maGiangVien) missingFields.push('maGiangVien');
     if (!username) missingFields.push('username');
     if (!hoTen) missingFields.push('hoTen');
-    if (!email) missingFields.push('email');
 
     // Nếu không phải giảng viên mới thì phải có thuocKhoa và maPhongBan
     if (laGiangVienMoi === 0) {
@@ -40,31 +39,30 @@ const createGiangVien = async (req, res) => {
   }
 };
 
-  
+
 const getGiangVien = async (req, res) => {
   try {
-      const response = await giangVienService.getGiangVien();
-      return res.status(201).json(response); 
-    } catch (e) {
-      return res.status(500).json({
-        message: e.message || "Server error",
-      });
-    }
+    const response = await giangVienService.getGiangVien();
+    return res.status(201).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message || "Server error",
+    });
   }
+}
 
-  const updateGiangVien = async (req, res) => {
-    try {
-        const response = await giangVienService.updateGiangVien(req.params.ma_giang_vien, req.body);
-        return res.status(201).json(response); 
-      } catch (e) {
-        return res.status(500).json({
-          message: e.message || "Server error",
-        });
-      }
-    }
+const updateGiangVien = async (req, res) => {
+  try {
+    const response = await giangVienService.updateGiangVien(req.params.ma_giang_vien, req.body);
+    return res.status(201).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message || "Server error",
+    });
+  }
+}
 module.exports = {
-    createGiangVien,
-    getGiangVien,
-    updateGiangVien
-  };
-  
+  createGiangVien,
+  getGiangVien,
+  updateGiangVien
+};

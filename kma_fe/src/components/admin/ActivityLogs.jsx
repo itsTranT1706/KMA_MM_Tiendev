@@ -20,21 +20,12 @@ import { useNavigate } from 'react-router-dom';
 import { getLogActivity } from "../../Api_controller/Service/adminService";
 
 
-// Fetch dữ liệu logs
-
-
-const mockLogs = [
-    { id: 1, log: 'User admin logged in' },
-    { id: 2, log: 'User user1 updated their account' },
-    { id: 3, log: 'User admin created a new account' },
-];
-
 const ActivityLogs = () => {
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
-    const rowsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
     const [filteredLogs, setFilteredLogs] = useState([]);
+    const rowsPerPage = 8;
 
     const navigate = useNavigate(); // Hook điều hướng
 
@@ -45,11 +36,11 @@ const ActivityLogs = () => {
     useEffect(() => {
         const fetchLogs = async () => {
             try {
-                const response = await getLogActivity();
+                const response = await getLogActivity(currentPage);
                 if (response.status === 200) {
                     setLogs(response.data.data);
                     setFilteredLogs(response.data.data);
-                    console.log(logs);
+                    console.log("check", logs);
                 } else {
                     console.error("Failed to fetch logs:", response.message);
                 }
@@ -63,6 +54,22 @@ const ActivityLogs = () => {
         fetchLogs();
     }, []);
 
+    const convertUTCToVietnamTime = (utcDateString) => {
+        const utcDate = new Date(utcDateString);
+        return utcDate.toLocaleString('vi-VN', {
+            timeZone: 'Asia/Ho_Chi_Minh',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+    };
+
+    // const vietnamTime = convertUTCToVietnamTime(utcTime);
+
     if (loading) {
         return <Typography>Loading...</Typography>;
     }
@@ -75,8 +82,7 @@ const ActivityLogs = () => {
         setCurrentPage(value);
     };
     const handleLogUpdated = (updatedLog) => {
-        //console.log("Updated user:", updatedUser);
-        // Cập nhật danh sách người dùng mà không gọi lại API
+
         setLogs((prevLogs) =>
             prevLogs.map((log) =>
                 log.id === updatedLog.id ? { ...log, ...updatedLog } : log
@@ -103,27 +109,28 @@ const ActivityLogs = () => {
                 <Table>
                     <TableHead>
                         <TableRow className="bg-blue-100 text-white">
-                            <TableCell>id</TableCell>
-                            <TableCell>actor_id</TableCell>
-                            <TableCell>actor_role</TableCell>
+                            <TableCell>STT</TableCell>
+                            <TableCell>username</TableCell>
+                            <TableCell>role</TableCell>
                             <TableCell>action</TableCell>
                             <TableCell>endpoint</TableCell>
                             <TableCell>request_data</TableCell>
                             <TableCell>response_status</TableCell>
-                            <TableCell>ip_address</TableCell>
+                            {/* <TableCell>ip_address</TableCell> */}
+                            <TableCell>Vào hồi</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {logs.map((log) => (
-                            <TableRow key={log.id}>
-                                <TableCell>{log.id}</TableCell>
-                                <TableCell>{log.actor_id}</TableCell>
-                                <TableCell>{log.actor_role}</TableCell>
+                        {currentLogs.map((log, index) => (
+                            <TableRow key={log.ID}>
+                                <TableCell>{index+1}</TableCell>
+                                <TableCell>{log.Username}</TableCell>
+                                <TableCell>{log.Role}</TableCell>
                                 <TableCell>{log.action}</TableCell>
                                 <TableCell>{log.endpoint}</TableCell>
                                 <TableCell>{JSON.stringify(log.request_data)}</TableCell>
                                 <TableCell>{log.response_status}</TableCell>
-                                <TableCell>{log.ip_address}</TableCell>
+                                <TableCell>{convertUTCToVietnamTime(log.created_at)}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

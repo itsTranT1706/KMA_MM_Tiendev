@@ -34,11 +34,6 @@ export const updateStudentById = async (data, id) => {
     }
 };
 
-
-
-
-
-
 // Lấy thông tin quân nhân theo sinh viên ID
 export const getMilitaryInfoByStudentId = async (id) => {
     const response = await api.get(`/thongtinquannhan/byidsinhvien/${id}`);
@@ -56,3 +51,8 @@ export const updateMilitaryInfoByStudentId = async (id, data) => {
     const response = await api.put(`/thongtinquannhan/byidsinhvien/${id}`, data);
     return response.data;
 };
+
+export const getListClassByKhoaDaoTaoId = async (id) => {
+    const response = await api.get(`/lop/bykhoadaotao?khoa_dao_tao_id=${id}`);
+    return response.data
+}
