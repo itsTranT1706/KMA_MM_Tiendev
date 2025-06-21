@@ -62,7 +62,7 @@ const deleteUser = async (req, res) => {
     const reponse = await UserService.deleteUser(idUser);
     return res.status(200).json(reponse);
   } catch (error) {
-    return res.status(404).json({ message: e });
+    return res.status(404).json({ message: error });
   }
 };
 const getAllUser = async (req, res) => {
@@ -70,7 +70,7 @@ const getAllUser = async (req, res) => {
     const response = await UserService.getAllUser();
     return res.status(200).json(response);
   } catch (error) {
-    return res.status(404).json({ message: e });
+    return res.status(404).json({ message: error });
   }
 };
 const getDetailUser = async (req, res) => {
@@ -84,7 +84,7 @@ const getDetailUser = async (req, res) => {
     const response = await UserService.getDetailUser(id);
     return res.status(200).json(response);
   } catch (error) {
-    return res.status(404).json({ message: e });
+    return res.status(404).json({ message: error });
   }
 };
 const updateUser = async (req, res) => {
@@ -100,7 +100,7 @@ const updateUser = async (req, res) => {
     const reponse = await UserService.updateUser(id, data);
     return res.status(200).json(reponse);
   } catch (error) {
-    return res.status(404).json({ message: e });
+    return res.status(404).json({ message: error });
   }
 };
 const refreshToken = async (req, res) => {
@@ -114,7 +114,7 @@ const refreshToken = async (req, res) => {
     const response = await jwtService.refreshTokenJwtService(token);
     return res.status(200).json(response);
   } catch (error) {
-    return res.status(200).json({ message: e });
+    return res.status(200).json({ message: error });
   }
 };
 const changePassword = async (req, res) => {
@@ -166,7 +166,14 @@ const get_logs = async (req, res) => {
     // const offset = (page -1 ) *limit;
     
     // const response = await UserService.get_logs(limit, offset, page);
-    const response = await UserService.get_logs();
+    const {role, startDate, endDate} = req.query;
+    
+    console.log(role,startDate, endDate);
+    if (startDate>endDate) {
+      throw new Error("Ngày bắt đầu phải nhỏ hơn ngày kết thúc.");
+
+    }
+    const response = await UserService.get_logs(role, startDate, endDate);
     
     return res.status(200).json(response);
 

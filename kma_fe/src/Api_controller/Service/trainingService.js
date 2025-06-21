@@ -1,7 +1,7 @@
 import api from "../Api_setup/axiosConfig"
 
 export const createTraining = async (data) => {
-  const response = await api.post(`training`, data)
+  const response = await api.post(`training/`, data)
   return response.data
 }
 export const fetchDanhSachHeDaoTao = async () => {
