@@ -90,19 +90,23 @@ const ManageAccounts = () => {
       }
     }
   };
-
+console.log(selectedRole)
   // Lọc danh sách người dùng khi tìm kiếm hoặc thay đổi vai trò
   useEffect(() => {
     const filtered = users.filter((user) => {
+      console.log(user)
       const matchesUsername = user.username
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
-      const matchesRole = selectedRole
+
+        const matchesRole = selectedRole
         ? user.role === parseInt(selectedRole)
         : true;
-      return matchesUsername && matchesRole;
-    });
-    setFilteredUsers(filtered);
+        console.log("role",matchesRole)
+        return matchesUsername && matchesRole;
+      });
+      setFilteredUsers(filtered);
+      // console.log(filteredUsers)
   }, [searchTerm, selectedRole, users]); // Khi users, searchTerm hoặc selectedRole thay đổi
 
   if (loading) {

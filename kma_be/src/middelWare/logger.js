@@ -71,9 +71,10 @@ const logActivity = async (req,res,next) => {
         //     });
         //   }
         //  else 
-         if (req.method !== "GET" && req.path!=="/login") {
+        
+         if (req.method !== "GET" && req.path!=="/login" && res.statusCode < 400) {
             // console.log(req.body.password);
-            console.log("truonwg hop 2:");
+            console.log(res);
             
             delete req.body.password;
             delete req.body.confirmPassword;

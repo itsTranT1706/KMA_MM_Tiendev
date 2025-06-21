@@ -22,10 +22,14 @@ export const updateUserById = async (id, data) => {
     }
 };
 
-export const getLogActivity = async (page) => {
+export const getLogActivity = async (role, startDate, endDate) => {
 
     const response = await api.get("/auth/logs", {
-        params: {page},
+        params: {
+            role
+            // startDate,
+            // endDate,
+        },
     });
-    return response; // Trả về role để sử dụng
+    return response; 
 };
